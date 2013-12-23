@@ -25,23 +25,26 @@ void MainWindow::on_bu_select_file_clicked()
 
 void MainWindow::on_bu_search_clicked()
 {
-    QString db_file=this->ui->tb_db_name->text();
     QString name=this->ui->tb_name->text();
+    queryAge(name);
+}
+
+QString MainWindow::getDBFile()
+{
     QMessageBox mb;
-    QString age="";
+    QString db_file=this->ui->tb_db_name->text();
 
     if(db_file==""){
         mb.setText("Error: Database not selected.");
         mb.exec();
-        return;
     }
+    return db_file;
+}
 
-    else if(name==""){
-        mb.setText("Error: No lookup name provided.");
-        mb.exec();
-        return;
-    }
-
+void MainWindow::setDB()
+{
+    QMessageBox mb;
+    QString db_file=getDBFile();
     QSqlDatabase db;
 
     db=QSqlDatabase::addDatabase("QSQLITE");
@@ -55,6 +58,19 @@ void MainWindow::on_bu_search_clicked()
     }
 
     printf("%s: open result success\n",__PRETTY_FUNCTION__);
+}
+
+void MainWindow::queryAge(QString name)
+{
+    setDB();
+    QMessageBox mb;
+    QString age="";
+
+    if(name==""){
+        mb.setText("Error: No lookup name provided.");
+        mb.exec();
+        return;
+    }
 
     QSqlQuery query("select age from data where name=?");
     query.bindValue(0,name);
@@ -74,4 +90,39 @@ void MainWindow::on_bu_search_clicked()
     }
 
     this->ui->tb_age->setText(age);
+}
+
+void MainWindow::on_bu_add_record_clicked()
+{
+    QString name=this->ui->tb_add_name->text();
+    QString age=this->ui->tb_add_age->text();
+    setDB();
+    QMessageBox mb;
+
+    if(name==""){
+        mb.setText("Error: No insert name provided.");
+        mb.exec();
+        return;
+    }
+
+    if(age==""){
+        mb.setText("Error: No insert age provided.");
+        mb.exec();
+        return;
+    }
+
+    QSqlQuery query("insert into data (name, age) values(?, ?)");
+    query.bindValue(0,name);
+    query.bindValue(1,age);
+
+    if(!query.exec()){
+        printf("%s: insert fail\n",__PRETTY_FUNCTION__);
+        mb.setText(query.lastError().text());
+        mb.exec();
+        return;
+    }
+
+    printf("%s: insert succeed\n",__PRETTY_FUNCTION__);
+    mb.setText("Insert successful!");
+    mb.exec();
 }
