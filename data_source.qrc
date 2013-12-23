@@ -1,1 +1,5 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>data.db</file>
+    </qresource>
+</RCC>
