@@ -92,6 +92,7 @@ void MainWindow::queryAge(QString name)
     this->ui->tb_age->setText(age);
     this->ui->tb_mod_age->setText(age);
     this->ui->tb_mod_name->setText(name);
+    this->ui->tb_del_name->setText(name);
 }
 
 void MainWindow::on_bu_add_record_clicked()
@@ -161,5 +162,32 @@ void MainWindow::on_bu_mod_record_clicked()
 
     printf("%s: modify succeed\n",__PRETTY_FUNCTION__);
     mb.setText("Redord modification successful!");
+    mb.exec();
+}
+
+void MainWindow::on_bu_delete_clicked()
+{
+    QString name=this->ui->tb_del_name->text();
+    setDB();
+    QMessageBox mb;
+
+    if(name==""){
+        mb.setText("Error: No delete name queried.");
+        mb.exec();
+        return;
+    }
+
+    QSqlQuery query("delete from data where name=?");
+    query.bindValue(0,name);
+
+    if(!query.exec()){
+        printf("%s: delete fail\n",__PRETTY_FUNCTION__);
+        mb.setText(query.lastError().text());
+        mb.exec();
+        return;
+    }
+
+    printf("%s: delete succeed\n",__PRETTY_FUNCTION__);
+    mb.setText("Redord deletion successful!");
     mb.exec();
 }
