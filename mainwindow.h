@@ -25,6 +25,8 @@ private slots:
 
     void on_bu_add_record_clicked();
 
+    void on_bu_mod_record_clicked();
+
 private:
     QSqlDatabase db;
     Ui::MainWindow *ui;

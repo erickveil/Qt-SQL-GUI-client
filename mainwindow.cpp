@@ -90,6 +90,8 @@ void MainWindow::queryAge(QString name)
     }
 
     this->ui->tb_age->setText(age);
+    this->ui->tb_mod_age->setText(age);
+    this->ui->tb_mod_name->setText(name);
 }
 
 void MainWindow::on_bu_add_record_clicked()
@@ -124,5 +126,40 @@ void MainWindow::on_bu_add_record_clicked()
 
     printf("%s: insert succeed\n",__PRETTY_FUNCTION__);
     mb.setText("Insert successful!");
+    mb.exec();
+}
+
+void MainWindow::on_bu_mod_record_clicked()
+{
+    QString name=this->ui->tb_mod_name->text();
+    QString age=this->ui->tb_mod_age->text();
+    setDB();
+    QMessageBox mb;
+
+    if(name==""){
+        mb.setText("Error: No modification name queried.");
+        mb.exec();
+        return;
+    }
+
+    if(age==""){
+        mb.setText("Error: No modification age provided.");
+        mb.exec();
+        return;
+    }
+
+    QSqlQuery query("update data set age=? where name=?");
+    query.bindValue(0,age);
+    query.bindValue(1,name);
+
+    if(!query.exec()){
+        printf("%s: modify fail\n",__PRETTY_FUNCTION__);
+        mb.setText(query.lastError().text());
+        mb.exec();
+        return;
+    }
+
+    printf("%s: modify succeed\n",__PRETTY_FUNCTION__);
+    mb.setText("Redord modification successful!");
     mb.exec();
 }
