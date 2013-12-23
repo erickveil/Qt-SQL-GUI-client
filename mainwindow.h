@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QDir>
 #include <QFileDialog>
+#include <QtSql>
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +20,8 @@ public:
 
 private slots:
     void on_bu_select_file_clicked();
+
+    void on_bu_search_clicked();
 
 private:
     Ui::MainWindow *ui;
